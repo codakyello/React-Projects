@@ -1,0 +1,90 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+.step {
+  max-width: 60rem;
+  margin: 10rem auto;
+  background-color: #eee;
+  padding: 2.5rem 10rem;
+  text-align: center;
+}
+
+.step__numbers {
+  display: flex;
+  justify-content: space-between;
+}
+.step__number {
+  border-radius: 100%;
+  display: inline-block;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  font-weight: bold;
+  background-color: #ddd;
+}
+
+.step__number.active {
+  color: #fff;
+  background-color: slateblue;
+}
+
+.btns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  border: none;
+  color: #fff;
+  padding: 1rem 2rem;
+  background-color: slateblue;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 40px;
+  color: inherit;
+}
+
+.close:hover {
+  color: #7950f2;
+}
+
+h1 {
+  margin: 4rem 0;
+}
