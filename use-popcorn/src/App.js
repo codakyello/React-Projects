@@ -1,8 +1,5 @@
 import "./index.css";
-
 import { useEffect, useState } from "react";
-
-// Outside any function is the initial render of the app
 
 function App() {
   const [selectedId, setSelectedId] = useState(null);
@@ -12,12 +9,42 @@ function App() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
 
-  function handleAdd(newWatched) {
-    updateWatch((watched) => [...watched, newWatched]);
+  function getStorageData() {
+    const watchData = localStorage.getItem("watch");
+    if (!watchData) return [];
+    if (watchData) return JSON.parse(watchData);
   }
 
+  function handleAdd(newWatched) {
+    const watchData = getStorageData();
+    watchData.push(newWatched);
+    localStorage.setItem("watch", JSON.stringify(watchData));
+    updateWatch(getStorageData());
+  }
+
+  useEffect(() => {
+    function loadAllWatchedData() {
+      updateWatch(getStorageData());
+    }
+    loadAllWatchedData();
+  }, []);
+
   function handleDelete(id) {
-    updateWatch((watchs) => watchs.filter((watch) => watch.imDbID !== id));
+    const watchData = getStorageData();
+    localStorage.clear();
+    const updatedData = watchData.filter((watch) => watch.imDbID !== id);
+    localStorage.setItem("watch", JSON.stringify(updatedData));
+    updateWatch(getStorageData());
+  }
+
+  function checkIfAdded(id) {
+    const added = watch.some((watched) => watched.imDbID === id);
+
+    const userRating = watch.find(
+      (watched) => watched.imDbID === id
+    )?.userRating;
+
+    return { added, userRating };
   }
 
   useEffect(() => {
@@ -52,7 +79,7 @@ function App() {
       }
     }
 
-    if (search.length < 3) {
+    if (search.length < 2) {
       setError("");
       updateMovies([]);
       return;
@@ -98,13 +125,14 @@ function App() {
           updateWatch={handleAdd}
           setSelectedId={setSelectedId}
           selectedId={selectedId}
+          checkIfAdded={checkIfAdded}
         />
       </WatchedBox>
     </div>
   );
 }
 
-function MovieBox({ setSelectedId, deleteWatched, movies, isLoading, error }) {
+function MovieBox({ setSelectedId, movies, isLoading, error }) {
   const [isOpen, setIsOpen] = useState(true);
 
   function handleOnClick(id) {
@@ -261,10 +289,20 @@ function WatchedAnalysisCard() {
 }
 
 // It mounts when there is a selected id
-function MovieDetails({ updateWatch, selectedId, setSelectedId }) {
+function MovieDetails({
+  updateWatch,
+  selectedId,
+  setSelectedId,
+  checkIfAdded,
+}) {
   const [userRating, setuserRating] = useState(0);
   const [movieDetails, setMovieDetail] = useState({});
   const [isLoading, setLoading] = useState(false);
+  const [isAdded, setAlreadyAdded] = useState({});
+
+  // It rerenders when i add to watch calling a fresh api again
+  // I want to stop this behaviour that when i update watch and when there is api data it shouldnt call another api for now
+  // SetSelectedId closes the page
 
   const {
     Title,
@@ -296,6 +334,7 @@ function MovieDetails({ updateWatch, selectedId, setSelectedId }) {
   }, [selectedId, setSelectedId, setMovieDetail]);
 
   useEffect(() => {
+    setAlreadyAdded({});
     async function fetchMovieDetails() {
       setLoading(true);
       try {
@@ -309,19 +348,24 @@ function MovieDetails({ updateWatch, selectedId, setSelectedId }) {
         }
 
         const data = await res.json();
+        console.log("Fetch some data");
 
         if (data.Response === "False") {
           throw new Error("No Movie Detail Found!!");
         }
+
         setMovieDetail(data);
+        setAlreadyAdded(checkIfAdded(selectedId));
       } catch (e) {
+        console.log(e.message);
       } finally {
         setLoading(false);
       }
     }
     if (!selectedId) return;
     fetchMovieDetails();
-  }, [selectedId]);
+    // If selectedId is changed
+  }, [selectedId, checkIfAdded]);
 
   useEffect(() => {
     if (!Title) return;
@@ -331,6 +375,7 @@ function MovieDetails({ updateWatch, selectedId, setSelectedId }) {
       document.title = "usePopcorn";
     };
   }, [Title]);
+
   if (!selectedId) return;
 
   return (
@@ -362,34 +407,41 @@ function MovieDetails({ updateWatch, selectedId, setSelectedId }) {
           </div>
           <div className="movie-overview">
             <div className="review-box">
-              <StarRating
-                key={selectedId}
-                starNumber={10}
-                color="gold"
-                starSize="2.2rem"
-                labelSize="1.7rem"
-                labelColor="gold"
-                starColor="gold"
-                onSetRating={setuserRating}
-              />
-              <button
-                onClick={() => {
-                  updateWatch({
-                    imDbID: selectedId,
-                    Title,
-                    Poster,
-                    imdbRating: Number(imdbRating),
-                    userRating: userRating.toFixed(1),
-                    Runtime,
-                  });
-                  setSelectedId("");
-                  setuserRating("");
-                }}
-                style={{ display: userRating ? "block" : "none" }}
-                className="btn-add"
-              >
-                + Add to list
-              </button>
+              {!isAdded.added && (
+                <>
+                  <StarRating
+                    key={selectedId}
+                    starNumber={10}
+                    color="gold"
+                    starSize="2.2rem"
+                    labelSize="1.7rem"
+                    labelColor="gold"
+                    starColor="gold"
+                    onSetRating={setuserRating}
+                  />
+                  <button
+                    onClick={() => {
+                      updateWatch({
+                        imDbID: selectedId,
+                        Title,
+                        Poster,
+                        imdbRating: Number(imdbRating),
+                        userRating: userRating.toFixed(1),
+                        Runtime,
+                      });
+                      setSelectedId("");
+                      setuserRating("");
+                    }}
+                    style={{ display: userRating ? "block" : "none" }}
+                    className="btn-add"
+                  >
+                    + Add to list
+                  </button>
+                </>
+              )}
+              {isAdded.added && (
+                <p>You rated this movie {isAdded.userRating} ⭐</p>
+              )}
             </div>
 
             <div className="narration">
