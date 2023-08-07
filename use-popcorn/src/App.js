@@ -38,13 +38,11 @@ function App() {
   }
 
   function checkIfAdded(id) {
-    const added = watch.some((watched) => watched.imDbID === id);
+    const isAdded = watch.some((watched) => watched.imDbID === id);
 
-    const userRating = watch.find(
-      (watched) => watched.imDbID === id
-    )?.userRating;
+    const movie = watch.find((watched) => watched.imDbID === id);
 
-    return { added, userRating };
+    return { isAdded, movie };
   }
 
   useEffect(() => {
@@ -59,12 +57,14 @@ function App() {
 
         // Connected to server
         if (!res.ok) {
+          updateMovies([]);
           throw new Error("Something went wrong while fetching");
         }
 
         const data = await res.json();
 
         if (data.Response === "False") {
+          updateMovies([]);
           throw new Error("Movie not Found!!");
         }
 
@@ -76,6 +76,7 @@ function App() {
         }
       } finally {
         setIsLoading(false);
+        // Reset Movies
       }
     }
 
@@ -172,29 +173,31 @@ function WatchedBox({ children, watch, deleteWatched }) {
     <div className="watched">
       <Toggle isOpen={isOpen} setIsOpen={setIsOpen} />
       <div style={{ display: !isOpen ? "none" : "block" }}>
-        <WatchedAnalysisCard />
-        {watch.map((watched) => (
-          <MovieCard movie={watched} key={watched.imDbID}>
-            {" "}
-            <ul className="watched__analysis-details">
-              <li className="watched__rating">
-                <span>⭐</span> {watched.imdbRating}
-              </li>
-              <li className="watched__review">
-                <span>🌟</span> {watched.userRating}
-              </li>
-              <li className="watched__time">
-                <span>⌛</span> {watched.Runtime}
-              </li>
-            </ul>
-            <button
-              onClick={() => deleteWatched(watched.imDbID)}
-              className="btn-delete"
-            >
-              X
-            </button>
-          </MovieCard>
-        ))}
+        <WatchedAnalysisCard watch={watch} />
+        {watch.map((watched) => {
+          return (
+            <MovieCard movie={watched} key={watched.imDbID}>
+              {" "}
+              <ul className="watched__analysis-details">
+                <li className="watched__rating">
+                  <span>⭐</span> {watched.imdbRating}
+                </li>
+                <li className="watched__review">
+                  <span>🌟</span> {watched.Rated}
+                </li>
+                <li className="watched__time">
+                  <span>⌛</span> {watched.Runtime}
+                </li>
+              </ul>
+              <button
+                onClick={() => deleteWatched(watched.imDbID)}
+                className="btn-delete"
+              >
+                X
+              </button>
+            </MovieCard>
+          );
+        })}
         {children}
       </div>
     </div>
@@ -258,7 +261,22 @@ function Toggle({ isOpen, setIsOpen }) {
   );
 }
 
-function WatchedAnalysisCard() {
+function WatchedAnalysisCard({ watch }) {
+  const avgImdbRating = watch
+    .reduce((acc, cur, _, arr) => {
+      return acc + +cur.imdbRating / arr.length;
+    }, 0)
+    .toFixed(1);
+  const totalMin = watch.reduce((acc, cur, _, arr) => {
+    if (cur.Runtime.split(" ")[0] === "N/A") return acc;
+    return acc + +cur.Runtime.split(" ")[0];
+  }, 0);
+  const avgUserRating = watch
+    .reduce((acc, cur, _, arr) => {
+      return acc + +cur.Rated / arr.length;
+    }, 0)
+    .toFixed(1);
+
   return (
     <div className="watched__analysis">
       <h2
@@ -272,16 +290,16 @@ function WatchedAnalysisCard() {
       </h2>
       <ul className="watched__analysis-details">
         <li className="watched__count">
-          <span>🔄️</span> 2 movies
+          <span>🔄️</span> {watch.length} movies
         </li>
         <li className="watched__rating">
-          <span>⭐</span> 8.65
+          <span>⭐</span> {avgImdbRating}
         </li>
         <li className="watched__review">
-          <span>🌟</span> 9.5
+          <span>🌟</span> {avgUserRating}
         </li>
         <li className="watched__time">
-          <span>⌛</span> 132 min
+          <span>⌛</span> {totalMin} min
         </li>
       </ul>
     </div>
@@ -298,11 +316,7 @@ function MovieDetails({
   const [userRating, setuserRating] = useState(0);
   const [movieDetails, setMovieDetail] = useState({});
   const [isLoading, setLoading] = useState(false);
-  const [isAdded, setAlreadyAdded] = useState({});
-
-  // It rerenders when i add to watch calling a fresh api again
-  // I want to stop this behaviour that when i update watch and when there is api data it shouldnt call another api for now
-  // SetSelectedId closes the page
+  const [isAdded, setAlreadyAdded] = useState(false);
 
   const {
     Title,
@@ -314,6 +328,7 @@ function MovieDetails({
     Actors: actors,
     Director: director,
     Genre: genre,
+    Rated,
   } = movieDetails;
 
   useEffect(() => {
@@ -329,17 +344,18 @@ function MovieDetails({
 
     return function () {
       document.removeEventListener("keydown", callback);
-      console.log("comment removed");
     };
   }, [selectedId, setSelectedId, setMovieDetail]);
 
   useEffect(() => {
-    setAlreadyAdded({});
+    setAlreadyAdded(false);
+    const controller = new AbortController();
     async function fetchMovieDetails() {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://www.omdbapi.com/?i=${selectedId}&apikey=bce66a65`
+          `http://www.omdbapi.com/?i=${selectedId}&apikey=bce66a65`,
+          { signal: controller.signal }
         );
 
         // Connected to server, start to handle your errors
@@ -348,24 +364,34 @@ function MovieDetails({
         }
 
         const data = await res.json();
-        console.log("Fetch some data");
 
         if (data.Response === "False") {
           throw new Error("No Movie Detail Found!!");
         }
 
         setMovieDetail(data);
-        setAlreadyAdded(checkIfAdded(selectedId));
       } catch (e) {
+        if (e.name === "AbortError") return;
         console.log(e.message);
       } finally {
         setLoading(false);
       }
     }
+
     if (!selectedId) return;
+    const checked = checkIfAdded(selectedId);
+    if (checked.isAdded) {
+      setAlreadyAdded(true);
+      setMovieDetail(checked.movie);
+      return;
+    }
     fetchMovieDetails();
+
+    return function () {
+      controller.abort();
+    };
     // If selectedId is changed
-  }, [selectedId, checkIfAdded]);
+  }, [selectedId, setMovieDetail, checkIfAdded]);
 
   useEffect(() => {
     if (!Title) return;
@@ -407,7 +433,7 @@ function MovieDetails({
           </div>
           <div className="movie-overview">
             <div className="review-box">
-              {!isAdded.added && (
+              {!isAdded && (
                 <>
                   <StarRating
                     key={selectedId}
@@ -426,8 +452,13 @@ function MovieDetails({
                         Title,
                         Poster,
                         imdbRating: Number(imdbRating),
-                        userRating: userRating.toFixed(1),
+                        Rated: userRating.toFixed(1),
                         Runtime,
+                        Director: director,
+                        Released: released,
+                        Actors: actors,
+                        Plot: plot,
+                        Genre: genre,
                       });
                       setSelectedId("");
                       setuserRating("");
@@ -439,9 +470,7 @@ function MovieDetails({
                   </button>
                 </>
               )}
-              {isAdded.added && (
-                <p>You rated this movie {isAdded.userRating} ⭐</p>
-              )}
+              {isAdded && <p>You rated this movie {Rated} ⭐</p>}
             </div>
 
             <div className="narration">
