@@ -1,40 +1,25 @@
 import "./index.css";
 import { useEffect, useState } from "react";
+import { useMovies } from "./useMovies";
+import { useLocalStorage } from "./useLocalStorage";
 
 function App() {
   const [selectedId, setSelectedId] = useState(null);
-  const [movies, updateMovies] = useState([]);
-  const [watch, updateWatch] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+
   const [search, setSearch] = useState("");
 
-  function getStorageData() {
-    const watchData = localStorage.getItem("watch");
-    if (!watchData) return [];
-    if (watchData) return JSON.parse(watchData);
+  const { data: movies, isLoading, error } = useMovies(search, setSelectedId);
+
+  const { storageData: watch, updateStorageData: updateWatch } =
+    useLocalStorage([], "watch");
+
+  function handleDelete(id) {
+    const updatedData = watch.filter((watch) => watch.imDbID !== id);
+    updateWatch(updatedData);
   }
 
   function handleAdd(newWatched) {
-    const watchData = getStorageData();
-    watchData.push(newWatched);
-    localStorage.setItem("watch", JSON.stringify(watchData));
-    updateWatch(getStorageData());
-  }
-
-  useEffect(() => {
-    function loadAllWatchedData() {
-      updateWatch(getStorageData());
-    }
-    loadAllWatchedData();
-  }, []);
-
-  function handleDelete(id) {
-    const watchData = getStorageData();
-    localStorage.clear();
-    const updatedData = watchData.filter((watch) => watch.imDbID !== id);
-    localStorage.setItem("watch", JSON.stringify(updatedData));
-    updateWatch(getStorageData());
+    updateWatch((watch) => [...watch, newWatched]);
   }
 
   function checkIfAdded(id) {
@@ -44,56 +29,6 @@ function App() {
 
     return { isAdded, movie };
   }
-
-  useEffect(() => {
-    const controller = new AbortController();
-    async function getMovieData() {
-      setIsLoading(true);
-      try {
-        const res = await fetch(
-          `http://www.omdbapi.com/?s=${search}&apikey=bce66a65`,
-          { signal: controller.signal }
-        );
-
-        // Connected to server
-        if (!res.ok) {
-          updateMovies([]);
-          throw new Error("Something went wrong while fetching");
-        }
-
-        const data = await res.json();
-
-        if (data.Response === "False") {
-          updateMovies([]);
-          throw new Error("Movie not Found!!");
-        }
-
-        updateMovies(data.Search);
-        setError("");
-      } catch (e) {
-        if (e.name !== "AbortError") {
-          setError(e.message);
-        }
-      } finally {
-        setIsLoading(false);
-        // Reset Movies
-      }
-    }
-
-    if (search.length < 2) {
-      setError("");
-      updateMovies([]);
-      return;
-    }
-
-    setSelectedId("");
-    getMovieData();
-
-    // Unmounts before rerender
-    return function () {
-      controller.abort();
-    };
-  }, [search]);
 
   return (
     <div className="app">
