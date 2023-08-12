@@ -1,0 +1,35 @@
+.pricing {
+  height: calc(100vh - 5rem);
+  margin: 2.5rem;
+  background-color: var(--color-dark--1);
+  background-size: cover;
+  background-position: center;
+  padding: 2.5rem 5rem;
+}
+
+.hero {
+  display: flex;
+  gap: 7rem;
+  align-items: center;
+  max-width: clamp(80rem, 80%, 90rem);
+  margin: 6rem auto;
+}
+
+.pricing h2 {
+  font-size: 4rem;
+  line-height: 1.2;
+  margin-bottom: 3rem;
+}
+
+.pricing p {
+  font-size: 1.6rem;
+  margin-bottom: 2rem;
+}
+
+.pricing section a {
+  margin-top: 2rem;
+}
+
+.hero__img {
+  width: 50%;
+}

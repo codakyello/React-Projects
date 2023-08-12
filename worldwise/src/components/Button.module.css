@@ -1,0 +1,21 @@
+.btn {
+  padding: 0.8rem 1.6rem;
+  border-radius: 5px;
+  text-decoration: none;
+  text-transform: uppercase;
+  display: inline-block;
+  font: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+.primary {
+  font-weight: 700;
+  background-color: var(--color-brand--2);
+  color: var(--color-dark--1);
+}
+
+.back {
+  background: none;
+  border: 1px solid currentColor;
+}

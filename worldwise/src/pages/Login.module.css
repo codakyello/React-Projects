@@ -1,0 +1,28 @@
+.loginpage {
+  height: calc(100vh - 5rem);
+  margin: 2.5rem;
+  background-color: var(--color-dark--1);
+  padding: 2.5rem 5rem;
+}
+
+.loginpage form {
+  width: 48rem;
+  background-color: var(--color-dark--2);
+  padding: 2rem 3rem;
+  border-radius: 7px;
+  margin: 8rem auto;
+}
+
+.loginpage label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.loginpage input {
+  display: block;
+  border-radius: 7px;
+  width: 100%;
+  padding: 1.2rem;
+  outline: none;
+  margin-bottom: 2rem;
+}
