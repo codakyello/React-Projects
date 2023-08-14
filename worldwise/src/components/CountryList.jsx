@@ -1,7 +1,6 @@
 import styles from "./CountryList.module.css";
 import CountryItem from "./CountryItem";
 import Spinner from "./Spinner";
-
 import PropTypes from "prop-types";
 
 CountryList.propTypes = {

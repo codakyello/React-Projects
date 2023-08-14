@@ -6,7 +6,6 @@ CountryItem.propTypes = {
 };
 
 function CountryItem({ country: { country, emoji } }) {
-  console.log(country.country);
   return (
     <div className={styles.countryitem}>
       <span>{emoji}</span>
