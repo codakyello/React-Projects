@@ -5,7 +5,7 @@ import Spinner from "./Spinner";
 import PropTypes from "prop-types";
 
 CityList.propTypes = {
-  cities: PropTypes.object,
+  cities: PropTypes.array,
   isLoading: PropTypes.bool,
 };
 

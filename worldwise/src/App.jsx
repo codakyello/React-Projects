@@ -15,7 +15,6 @@ export default function App() {
   const [cities, setcities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(isLoading);
   useEffect(() => {
     async function getCityData() {
       setIsLoading(true);
@@ -50,7 +49,10 @@ export default function App() {
             path="cities"
             element={<CityList cities={cities} isLoading={isLoading} />}
           />
-          <Route path="countries" element={<CountryList />} />
+          <Route
+            path="countries"
+            element={<CountryList cities={cities} isLoading={isLoading} />}
+          />
           <Route path="form" element={<p>Form</p>} />
         </Route>
         <Route path="*" element={<PageNotFound />} />

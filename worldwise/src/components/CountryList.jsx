@@ -1,27 +1,27 @@
 import styles from "./CountryList.module.css";
-import PropTypes from "prop-types";
 import CountryItem from "./CountryItem";
+import Spinner from "./Spinner";
+
+import PropTypes from "prop-types";
 
 CountryList.propTypes = {
   cities: PropTypes.array,
+  isLoading: PropTypes.bool,
 };
-function CountryList() {
-  // const countries = [];
-  // cities.forEach((curr)=> {
-  //     countries.forEach((cur)=> {
-  //         if(curr.countryName !== cur.countryName)
-  //     })
-  // })
+
+export default function CountryList({ cities, isLoading }) {
+  const countries = cities.reduce((acc, curr) => {
+    if (!acc.map((el) => el.country).includes(curr.country)) {
+      return [...acc, { country: curr.country, emoji: curr.emoji }];
+    } else return acc;
+  }, []);
+
+  if (isLoading) return <Spinner />;
   return (
     <div className={styles.countrylist}>
-      <CountryItem />
-      {/* {.map((city, i) => (
-        <CountryItem key={i} />
-      ))} */}
+      {countries.map((country, i) => (
+        <CountryItem key={i} country={country} />
+      ))}
     </div>
   );
 }
-
-export default CountryList;
-
-// How to check if somehting already exist in a list before
