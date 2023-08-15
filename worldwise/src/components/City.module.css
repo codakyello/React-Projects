@@ -1,0 +1,32 @@
+.city {
+  background-color: var(--color-dark--2);
+  border-radius: 7px;
+  align-self: stretch;
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: 70%;
+  overflow: scroll;
+}
+
+.city::-webkit-scrollbar {
+  display: none;
+  scroll-behavior: smooth;
+}
+
+h6 {
+  text-transform: uppercase;
+  color: var(--color-light--1);
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+p {
+  color: var(--color-light--3);
+  font-size: 1.7rem;
+}

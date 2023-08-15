@@ -1,6 +1,12 @@
 import styles from "./Map.module.css";
+import { useNavigate } from "react-router-dom";
 function Map() {
-  return <div className={styles.map}>Map</div>;
+  const navigate = useNavigate();
+  return (
+    <div onClick={() => navigate("form")} className={styles.map}>
+      Map
+    </div>
+  );
 }
 
 export default Map;

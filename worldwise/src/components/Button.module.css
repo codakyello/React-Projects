@@ -4,7 +4,8 @@
   text-decoration: none;
   text-transform: uppercase;
   display: inline-block;
-  font: inherit;
+  font-size: 1.5rem;
+  font-family: inherit;
   cursor: pointer;
   border: none;
 }
@@ -16,6 +17,8 @@
 }
 
 .back {
+  color: #fff;
   background: none;
   border: 1px solid currentColor;
+  align-self: start;
 }

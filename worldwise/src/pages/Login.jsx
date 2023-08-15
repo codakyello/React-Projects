@@ -30,6 +30,7 @@ function Login() {
           Email address
         </label>
         <input
+          placeholder="email address"
           required
           onChange={(e) => setEmail(e.target.value)}
           type="email"
@@ -41,6 +42,7 @@ function Login() {
           Password
         </label>
         <input
+          placeholder="password"
           required
           onChange={(e) => setPassword(e.target.value)}
           type="password"
@@ -48,7 +50,7 @@ function Login() {
           name="password"
         />
 
-        <Button text={"Login"} type={"primary"} to={"/app"}></Button>
+        <Button type={"primary"}>Login</Button>
       </form>
     </main>
   );

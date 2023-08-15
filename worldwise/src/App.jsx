@@ -9,15 +9,18 @@ import { useEffect, useState } from "react";
 import CityList from "./components/CityList";
 import CountryList from "./components/CountryList";
 import { Navigate } from "react-router-dom";
+import City from "./components/City";
+import Form from "./components/Form";
 
 const BASE_URL = "http://localhost:9000";
+
 export default function App() {
   const [cities, setcities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     async function getCityData() {
-      setIsLoading(true);
       try {
         const res = await fetch(`${BASE_URL}/cities`);
 
@@ -46,6 +49,10 @@ export default function App() {
         <Route path="app" element={<AppLayout />}>
           <Route index element={<Navigate replace to="cities" />} />
           <Route
+            path="cities/:id"
+            element={<City cities={cities} isLoading={isLoading} />}
+          />
+          <Route
             path="cities"
             element={<CityList cities={cities} isLoading={isLoading} />}
           />
@@ -53,7 +60,7 @@ export default function App() {
             path="countries"
             element={<CountryList cities={cities} isLoading={isLoading} />}
           />
-          <Route path="form" element={<p>Form</p>} />
+          <Route path="form" element={<Form />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
