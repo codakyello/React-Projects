@@ -6,11 +6,16 @@ Button.propTypes = {
   type: PropTypes.any,
   onClick: PropTypes.func,
   children: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
-function Button({ children, type, onClick }) {
+function Button({ children, type, onClick, disabled }) {
   return (
-    <button onClick={onClick} className={`${styles.btn} ${styles[type]}`}>
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      className={`${styles.btn} ${styles[type]}`}
+    >
       {children}
     </button>
   );

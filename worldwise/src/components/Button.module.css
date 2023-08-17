@@ -22,3 +22,14 @@
   border: 1px solid currentColor;
   align-self: start;
 }
+
+.position {
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  font-weight: 700;
+  transform: translateX(-50%);
+  color: #333;
+  z-index: 111111111;
+  background-color: var(--color-brand--2);
+}

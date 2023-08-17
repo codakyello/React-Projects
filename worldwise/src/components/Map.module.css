@@ -1,4 +1,27 @@
-.map {
+.mapContainer {
   flex: 1;
   background-color: var(--color-dark--2);
+  position: relative;
+}
+
+.map {
+  height: 100%;
+}
+
+:global(.leaflet-popup .leaflet-popup-content) {
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+:global(.leaflet-popup .leaflet-popup-content span:first-child) {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+:global(.leaflet-popup-content-wrapper) {
+  background-color: var(--color-dark--1) !important;
+  border-left: 5px solid var(--color-brand--2);
+  color: #fff !important;
 }

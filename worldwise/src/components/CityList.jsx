@@ -1,27 +1,31 @@
 import styles from "./CityList.module.css";
 import CityItem from "./CityItem";
 import Spinner from "./Spinner";
+import Message from "./Message";
+import { useCities } from "../contexts/CitiesContext";
 
-import PropTypes from "prop-types";
+function CityList() {
+  const {
+    cities,
+    isLoading,
+    currentCity: { id: currentCityId },
+  } = useCities();
 
-CityList.propTypes = {
-  cities: PropTypes.array,
-  isLoading: PropTypes.bool,
-};
+  // console.log(cities.at(0).emoji);
 
-function CityList({ cities, isLoading }) {
+  if (isLoading) return <Spinner />;
+
+  if (!cities.length)
+    return (
+      <Message message="Add your first city by clicking on a city on the map" />
+    );
+  // Show spinner and message
   return (
-    <>
-      {isLoading && <Spinner />}
-
-      {!isLoading && (
-        <ul className={styles.cityList}>
-          {cities.map((city, i) => (
-            <CityItem key={i} city={city} />
-          ))}
-        </ul>
-      )}
-    </>
+    <ul className={styles.cityList}>
+      {cities.map((city, i) => (
+        <CityItem active={currentCityId === city.id} key={i} city={city} />
+      ))}
+    </ul>
   );
 }
 
