@@ -1,28 +1,16 @@
 {
   "cities": [
     {
-      "cityName": "Bouandougou",
-      "country": "Cote d'Ivoire",
-      "emoji": "🇨🇮",
-      "date": "2023-08-17T22:12:47.781Z",
+      "cityName": "Lagos",
+      "country": "Nigeria",
+      "emoji": "🇳🇬",
+      "date": "2023-08-18T00:03:55.823Z",
       "notes": "",
       "position": {
-        "lat": "8.240147678265236",
-        "lng": "-5.628709872376621"
+        "lat": "6.42873159734261",
+        "lng": "3.308207796616003"
       },
-      "id": 3
-    },
-    {
-      "cityName": "Massala",
-      "country": "Cote d'Ivoire",
-      "emoji": "🇨🇮",
-      "date": "2023-08-17T22:12:50.360Z",
-      "notes": "",
-      "position": {
-        "lat": "7.8701167881328065",
-        "lng": "-6.282655886459152"
-      },
-      "id": 4
+      "id": 8775
     }
   ]
 }

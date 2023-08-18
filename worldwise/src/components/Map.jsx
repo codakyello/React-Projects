@@ -14,6 +14,7 @@ import { useCities } from "../contexts/CitiesContext";
 import { useNavigate } from "react-router-dom";
 import useLocation from "../hooks/useGeolocation";
 import useUrlPosition from "../hooks/useUrlPosition";
+import User from "./User";
 
 function Map() {
   const { cities } = useCities();
@@ -34,6 +35,7 @@ function Map() {
 
   return (
     <div className={styles.mapContainer}>
+      <User />
       <Button
         disabled={isLoadingPosition}
         type="position"

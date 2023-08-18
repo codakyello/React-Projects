@@ -18,7 +18,7 @@ function HomePage() {
           of. Never forget your wonderful experiences, and show your friends how
           you have wandered the world.
         </h2>
-        <Cta text={"Start tracking now"} to="/app" />
+        <Cta text={"Start tracking now"} to="/login" />
       </section>
     </header>
   );

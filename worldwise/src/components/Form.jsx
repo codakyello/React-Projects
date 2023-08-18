@@ -74,6 +74,7 @@ function Form() {
       date,
       notes,
       position: { lat, lng },
+      id: +`${Date.now()}`.slice(-4),
     };
 
     await createCity(newCity);

@@ -4,23 +4,28 @@ import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../contexts/FakeAuthContext";
 import { useState, useEffect } from "react";
+import { useAuth } from "../contexts/FakeAuthContext";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, setIsLogged] = useState(false);
+  const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
-
-    if (email && password) setIsLogged(true);
+    login(email, password);
   }
+
+  useEffect(() => {
+    setEmail("olaoluwaolorede8@gmail.com");
+    setPassword("olaola03");
+  }, []);
 
   useEffect(
     function () {
-      if (login) navigate("/app", { replace: true });
+      if (isAuthenticated) navigate("/app", { replace: true });
     },
-    [login, navigate]
+    [isAuthenticated, navigate]
   );
   return (
     <main className={styles.loginpage}>
@@ -30,6 +35,7 @@ function Login() {
           Email address
         </label>
         <input
+          value={email}
           placeholder="email address"
           required
           onChange={(e) => setEmail(e.target.value)}
@@ -42,6 +48,7 @@ function Login() {
           Password
         </label>
         <input
+          value={password}
           placeholder="password"
           required
           onChange={(e) => setPassword(e.target.value)}

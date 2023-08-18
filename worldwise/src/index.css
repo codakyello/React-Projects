@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap");
 @import "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
 @import "react-datepicker/dist/react-datepicker.css";
-:root  {
+:root {
   --color-brand--1: #ffb545;
   --color-brand--2: #00c46a;
 
@@ -32,7 +32,6 @@ body {
   font-size: 1.6rem;
   line-height: 1.6;
   font-weight: 400;
-  padding: 2.5rem;
 }
 
 label {
