@@ -1,4 +1,3 @@
-import { useEffect, useReducer } from "react";
 import Header from "./Header";
 import Main from "./Main";
 import Loader from "./Loader";
@@ -7,121 +6,23 @@ import StartScreen from "./StartScreen";
 import Question from "./Question";
 import Progress from "./Progress";
 import Finished from "./Finished";
-
-const SECS_PER_QUESTION = 3;
-
-const initialState = {
-  questions: [],
-  // 'loading', 'error', 'ready', 'active', 'finished'
-  status: "loading",
-  index: 0,
-  error: null,
-  answer: null,
-  score: 0,
-  time: 0,
-  highScore: 0,
-};
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "dataReceived":
-      return {
-        ...state,
-        questions: action.payload,
-        status: "ready",
-        time: action.payload.length * SECS_PER_QUESTION,
-      };
-
-    case "dataFailed":
-      return {
-        ...state,
-        status: "error",
-        error: action.payload.error,
-      };
-
-    case "startQuiz":
-      return {
-        ...state,
-        status: "active",
-      };
-    case "answer":
-      return {
-        ...state,
-        answer: action.payload,
-        score:
-          state.questions.at(state.index).correctOption === action.payload
-            ? state.score + state.questions.at(state.index).points
-            : state.score,
-      };
-
-    case "nextQuestion":
-      return {
-        ...state,
-        index: state.index++,
-        answer: null,
-      };
-
-    case "tick":
-      return {
-        ...state,
-        time: state.time - 1,
-        status: state.time === 0 ? "finish" : state.status,
-        highScore:
-          state.score > state.highScore ? state.score : state.highScore,
-      };
-
-    case "finished":
-      return {
-        ...state,
-        status: "finish",
-        highScore:
-          state.score > state.highScore ? state.score : state.highScore,
-      };
-
-    case "restart":
-      return {
-        ...initialState,
-        questions: state.questions,
-        status: "ready",
-        highScore: state.highScore,
-        time: state.questions.length * SECS_PER_QUESTION,
-      };
-
-    default:
-      throw new Error("Not a valid type");
-  }
-}
+import { useQuiz, QuizProvider } from "./QuizContext";
 
 export default function App() {
-  const [
-    { questions, index, status, time, error, answer, score, highScore },
+  const {
+    questions,
     dispatch,
-  ] = useReducer(reducer, initialState);
-
+    status,
+    index,
+    score,
+    answer,
+    error,
+    time,
+    highScore,
+  } = useQuiz();
   const maxPoints = questions.reduce((acc, curr) => {
     return acc + curr.points;
   }, 0);
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await fetch("http://localhost:8000/questions");
-
-        // Connected to server
-        if (res.status !== 200) {
-          throw new Error("Something happened");
-        }
-        const data = await res.json();
-        dispatch({ type: "dataReceived", payload: data });
-      } catch (e) {
-        dispatch({ type: "dataFailed", payload: { error: e.message } });
-        console.log(e);
-      }
-    }
-
-    fetchData();
-  }, []);
-
   return (
     <div className="app">
       <Header />
