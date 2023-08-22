@@ -1,16 +1,64 @@
 {
   "cities": [
     {
+      "cityName": "Onatario",
+      "country": "Canada",
+      "emoji": "",
+      "date": "2023-08-21T19:59:44.823Z",
+      "notes": "Pretty decent city",
+      "position": {
+        "lat": "40.71558458649635",
+        "lng": "-97.85450311003834"
+      },
+      "id": 141
+    },
+    {
+      "cityName": "Rio Verde",
+      "country": "Brazil",
+      "emoji": "🇧🇷",
+      "date": "2023-08-21T20:05:48.074Z",
+      "notes": "I met messi",
+      "position": {
+        "lat": "-17.603225265568888",
+        "lng": "-51.20981423790293"
+      },
+      "id": 5043
+    },
+    {
+      "cityName": "Liverpool",
+      "country": "United Kingdom of Great Britain and Northern Ireland (the)",
+      "emoji": "🇬🇧",
+      "date": "2023-08-21T20:06:07.576Z",
+      "notes": "Great Trip",
+      "position": {
+        "lat": "53.41290313026169",
+        "lng": "-2.893004724217645"
+      },
+      "id": 2940
+    },
+    {
+      "cityName": "Goldthwaite",
+      "country": "United States of America (the)",
+      "emoji": "🇺🇸",
+      "date": "2023-08-21T20:08:38.620Z",
+      "notes": "",
+      "position": {
+        "lat": "31.25400892471789",
+        "lng": "-98.55116310490234"
+      },
+      "id": 9154
+    },
+    {
       "cityName": "Lagos",
       "country": "Nigeria",
       "emoji": "🇳🇬",
-      "date": "2023-08-18T00:03:55.823Z",
-      "notes": "",
+      "date": "2023-08-21T20:10:02.455Z",
+      "notes": "My current location",
       "position": {
-        "lat": "6.42873159734261",
-        "lng": "3.308207796616003"
+        "lat": "6.523214953612225",
+        "lng": "3.549943617864875"
       },
-      "id": 8775
+      "id": 1423
     }
   ]
 }

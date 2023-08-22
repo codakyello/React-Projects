@@ -9,6 +9,7 @@ import Message from "./Message";
 import Spinner from "./Spinner";
 import DatePicker from "react-datepicker";
 import { useCities } from "../contexts/CitiesContext";
+import useInternet from "../hooks/useInternet";
 
 export function convertToEmoji(countryCode) {
   const codePoints = countryCode
@@ -31,12 +32,14 @@ function Form() {
   const [emoji, setEmoji] = useState("");
   const [geoCodingError, setGeocodingError] = useState("");
   const { createCity, isLoading } = useCities();
+  const [online] = useInternet();
 
   useEffect(() => {
     async function fetchCityData() {
       setGeocodingError("");
       setIsLoadingGeocoding(true);
       try {
+        if (!online) throw new Error("No Internet Connection");
         const res = await fetch(`${BASE_URL}?latitude=${lat}&longitude=${lng}`);
 
         // Got response from server
@@ -52,7 +55,6 @@ function Form() {
         setCityName(data.city || data.locality || "");
         setCountry(data.countryName);
         setEmoji(convertToEmoji(data.countryCode));
-        console.log(data);
       } catch (err) {
         setGeocodingError(err.message);
       } finally {
@@ -62,7 +64,7 @@ function Form() {
 
     if (!lat && !lng) return;
     fetchCityData();
-  }, [lat, lng]);
+  }, [lat, lng, online]);
 
   async function handleSubmit(e) {
     e.preventDefault();

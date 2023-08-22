@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 function Question({
   question: { question, options, correctOption },
   dispatch,
@@ -9,18 +7,6 @@ function Question({
   index,
 }) {
   const isAnswered = answer === null ? false : true;
-  const min = Math.floor(time / 60);
-  const sec = time % 60;
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      dispatch({ type: "tick" });
-    }, 1000);
-
-    return function () {
-      clearInterval(timer);
-    };
-  }, [dispatch]);
 
   return (
     <div>
@@ -57,12 +43,6 @@ function Question({
       ) : (
         ""
       )}
-
-      <div className="timer">
-        {min < 10 && "0"}
-        {min}:{sec < 10 && "0"}
-        {sec}
-      </div>
     </div>
   );
 }

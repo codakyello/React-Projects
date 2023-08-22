@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { faker } from "@faker-js/faker";
 import { useReducer } from "react";
 
@@ -54,17 +54,18 @@ function PostProvider({ children }) {
             .includes(searchQuery.toLowerCase())
         )
       : posts;
+
+  const value = useMemo(() => {
+    return {
+      posts: searchedPosts,
+      searchQuery,
+      dispatch,
+    };
+  }, [searchQuery, searchedPosts]);
+
   return (
     // Provide context to children
-    <PostContext.Provider
-      value={{
-        posts: searchedPosts,
-        searchQuery,
-        dispatch,
-      }}
-    >
-      {children}
-    </PostContext.Provider>
+    <PostContext.Provider value={value}>{children}</PostContext.Provider>
   );
 }
 // Consume context

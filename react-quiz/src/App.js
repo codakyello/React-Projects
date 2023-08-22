@@ -6,7 +6,8 @@ import StartScreen from "./StartScreen";
 import Question from "./Question";
 import Progress from "./Progress";
 import Finished from "./Finished";
-import { useQuiz, QuizProvider } from "./QuizContext";
+import { useQuiz } from "./QuizContext";
+import Footer from "./Footer";
 
 export default function App() {
   const {
@@ -61,6 +62,7 @@ export default function App() {
             dispatch={dispatch}
           />
         )}
+        <Footer />
       </Main>
     </div>
   );

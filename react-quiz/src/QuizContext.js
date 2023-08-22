@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 
-const SECS_PER_QUESTION = 7;
+const SECS_PER_QUESTION = 1;
 
 const initialState = {
   questions: [],
@@ -56,7 +56,7 @@ function reducer(state, action) {
     case "tick":
       return {
         ...state,
-        time: state.time - 1,
+        time: state.time === 0 ? state.time : state.time - 1,
         status: state.time === 0 ? "finish" : state.status,
         highScore:
           state.score > state.highScore ? state.score : state.highScore,
