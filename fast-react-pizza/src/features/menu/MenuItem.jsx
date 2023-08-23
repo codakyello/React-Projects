@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import Button from "../../ui/Button";
 
 MenuItem.propTypes = {
   pizza: PropTypes.object,
@@ -17,13 +18,24 @@ function MenuItem({ pizza }) {
 
   id;
   return (
-    <li>
-      <img src={imageUrl} alt={name} />
-      <div>
-        <p>{name}</p>
-        <p>{ingredients.join(", ")}</p>
-        <div>
-          {!soldOut ? <p>{formatCurrency(unitPrice)}</p> : <p>Sold out</p>}
+    <li className="flex flex-1 gap-4 py-2">
+      <img
+        className={`h-24 ${soldOut ? "opacity-70 grayscale" : ""}`}
+        src={imageUrl}
+        alt={name}
+      />
+      <div className="flex grow flex-col pt-0.5">
+        <p className="font-medium">{name}</p>
+        <p className="text-sm capitalize italic text-stone-500">
+          {ingredients.join(", ")}
+        </p>
+        <div className="mt-auto flex items-center justify-between">
+          {!soldOut ? (
+            <p className="text-sm">{formatCurrency(unitPrice)}</p>
+          ) : (
+            <p className="text-ston-500 text-sm uppercase">Sold out</p>
+          )}
+          <Button type="small">Add to cart</Button>
         </div>
       </div>
     </li>

@@ -6,19 +6,16 @@ import { Outlet, useNavigation } from "react-router-dom";
 function AppLayout() {
   const navigation = useNavigation();
   return (
-    <div className="layout">
+    <div className="grid h-screen grid-rows-[min-content_1fr_min-content]">
       {navigation.state === "loading" && <Loader />}
-      {navigation.state === "idle" || navigation.state === "submitting" ? (
-        <>
-          <Header />
-          <main>
-            <Outlet />
-          </main>
-          <CartOverview />
-        </>
-      ) : (
-        ""
-      )}
+      <Header />
+      <div className="overflow-scroll">
+        <main className=" mx-auto max-w-3xl">
+          <Outlet />
+        </main>
+      </div>
+
+      <CartOverview />
     </div>
   );
 }
