@@ -9,7 +9,7 @@
 
 @layer components {
   .input {
-    @apply w-full rounded-full border border-stone-200 px-4 py-2 text-sm transition-all duration-300 placeholder:text-stone-400 focus:outline-none focus-visible:ring focus-visible:ring-yellow-400 md:px-4 md:py-2;
+    @apply rounded-full border border-stone-200 px-4 py-2 text-sm transition-all duration-300 placeholder:text-stone-400 focus:outline-none focus-visible:ring focus-visible:ring-yellow-400 md:px-4 md:py-2;
   }
 
   .loader {

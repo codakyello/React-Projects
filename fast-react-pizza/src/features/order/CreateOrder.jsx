@@ -48,29 +48,44 @@ function CreateOrder() {
       <h2>Ready to order? Lets go!</h2>
 
       <Form method="POST">
-        <div>
-          <label>First Name</label>
-          <input className="input" type="text" name="customer" required />
+        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <label className="sm:basis-40">First Name</label>
+          <input
+            className="input w-full "
+            type="text"
+            name="customer"
+            required
+          />
         </div>
 
-        <div>
+        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label>Phone number</label>
-          <div>
-            <input className="input" type="tel" name="phone" required />
+          <div className="grow">
+            <input className="input w-full " type="tel" name="phone" required />
+            {formErrors?.phone && (
+              <p
+                className="mt-2 rounded-full bg-red-100 p-2 text-xs text-red-700"
+                style={{ color: "red" }}
+              >
+                {formErrors.phone}
+              </p>
+            )}
           </div>
-          {formErrors?.phone && (
-            <p style={{ color: "red" }}>{formErrors.phone}</p>
-          )}
         </div>
 
-        <div>
+        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label>Address</label>
-          <div>
-            <input className="input" type="text" name="address" required />
+          <div className="grow">
+            <input
+              className="input w-full "
+              type="text"
+              name="address"
+              required
+            />
           </div>
         </div>
 
-        <div>
+        <div className="mb-12 flex items-center gap-5">
           <input
             className="focus h-6 w-6 accent-yellow-400"
             type="checkbox"
@@ -79,10 +94,10 @@ function CreateOrder() {
             // value={withPriority}
             // onChange={(e) => setWithPriority(e.target.checked)}
           />
-          <label htmlFor="priority">Want to yo give your order priority?</label>
+          <label htmlFor="priority">Want to give your order priority?</label>
         </div>
 
-        <div>
+        <div className="grow">
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button type="primary" disabled={isSubmitting}>
             {!isSubmitting ? "Order now" : "Placing order..."}
