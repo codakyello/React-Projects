@@ -6,31 +6,61 @@ import Cart from "./features/cart/Cart";
 import CreateOrder, {
   action as createOrderAction,
 } from "./features/order/CreateOrder";
-import Order, { loader as orderLoader } from "./features/order/Order";
+import Order, {
+  action as updatePriorityAction,
+  loader as orderLoader,
+} from "./features/order/Order";
 import AppLayout from "./ui/AppLayout";
+import { Provider } from "react-redux";
+import store from "./store";
+import ProtectedRoutes from "./features/user/ProtectedRoutes";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout />,
+    element: (
+      <Provider store={store}>
+        <AppLayout />
+      </Provider>
+    ),
     children: [
       { path: "/", element: <Home /> },
       {
         path: "/menu",
-        element: <Menu />,
+        element: (
+          <ProtectedRoutes>
+            <Menu />
+          </ProtectedRoutes>
+        ),
         loader: menuLoader,
         errorElement: <Error />,
       },
-      { path: "/cart", element: <Cart /> },
+      {
+        path: "/cart",
+        element: (
+          <ProtectedRoutes>
+            <Cart />
+          </ProtectedRoutes>
+        ),
+      },
       {
         path: "/order/:orderId",
-        element: <Order />,
+        element: (
+          <ProtectedRoutes>
+            <Order />
+          </ProtectedRoutes>
+        ),
         loader: orderLoader,
+        action: updatePriorityAction,
         errorElement: <Error />,
       },
       {
         path: "/order/new",
-        element: <CreateOrder />,
+        element: (
+          <ProtectedRoutes>
+            <CreateOrder />
+          </ProtectedRoutes>
+        ),
         action: createOrderAction,
         errorElement: <Error />,
       },

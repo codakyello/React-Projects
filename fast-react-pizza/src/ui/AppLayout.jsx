@@ -3,6 +3,8 @@ import Loader from "./Loader";
 import CartOverview from "../features/cart/CartOverview";
 import { Outlet, useNavigation } from "react-router-dom";
 
+// So basically before it sees any of the children to render i want it to see the auth clause
+
 function AppLayout() {
   const navigation = useNavigation();
   return (

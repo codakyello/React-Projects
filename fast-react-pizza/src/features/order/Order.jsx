@@ -1,19 +1,30 @@
 /* eslint-disable react-refresh/only-export-components */
 // Test ID: IIDSAT
-import { useLoaderData } from "react-router-dom";
-import { getOrder } from "../../services/apiRestaurant";
+import { useLoaderData, useFetcher } from "react-router-dom";
+import { getOrder, updateOrder } from "../../services/apiRestaurant";
 import OrderItem from "./OrderItem";
+import Button from "../../ui/Button";
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
 } from "../../utils/helpers";
+import store from "../../store";
+import { useEffect } from "react";
 
 function Order() {
-  const order = useLoaderData();
-  //id
-  //cart
-  // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
+  const data = useLoaderData();
+  const order = { ...data };
+
+  const fetcher = useFetcher();
+
+  useEffect(
+    function () {
+      if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
+    },
+    [fetcher],
+  );
+
   const {
     id,
     cart,
@@ -25,7 +36,6 @@ function Order() {
   } = order;
 
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
-  console.log(cart);
 
   return (
     <div className="space-y-8 px-4 py-6">
@@ -57,7 +67,15 @@ function Order() {
 
       <ul className="dive-stone-200 divide-y">
         {cart.map((item, index) => (
-          <OrderItem item={item} key={index} />
+          <OrderItem
+            item={item}
+            key={index}
+            isLoadingIngredients={fetcher.state === "loading"}
+            ingredients={
+              fetcher.data?.find((el) => el.id === item.pizzaId).ingredients ??
+              []
+            }
+          />
         ))}
       </ul>
       <div className="space-y-2 bg-stone-200 px-6 py-5">
@@ -73,12 +91,26 @@ function Order() {
           To pay on delivery: {formatCurrency(orderPrice + priorityPrice)}
         </p>
       </div>
+      {!priority && (
+        <fetcher.Form method="PATCH">
+          <Button type="primary">Make Priority</Button>
+        </fetcher.Form>
+      )}
     </div>
   );
 }
 
 export async function loader({ params }) {
+  const { userName } = store.getState().user;
+  if (!userName) return null;
   return await getOrder(params.orderId);
 }
 
+export async function action({ params }) {
+  const data = { priority: true };
+  await updateOrder(params.orderId, data);
+
+  // Refresh the page and get the updated data.
+  return null;
+}
 export default Order;
