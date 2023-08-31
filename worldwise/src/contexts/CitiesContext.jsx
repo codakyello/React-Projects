@@ -33,7 +33,6 @@ function reducer(state, action) {
         isLoading: false,
       };
     case "fetch-cities":
-      console.log(action.payload);
       return {
         ...state,
         cities: action.payload,
