@@ -1,4 +1,7 @@
 import styled, { css } from "styled-components";
+import PropTypes from "prop-types";
+
+import useUrlParams from "../hooks/useUrlParams";
 
 const StyledFilter = styled.div`
   border: 1px solid var(--color-grey-100);
@@ -33,3 +36,37 @@ const FilterButton = styled.button`
     color: var(--color-brand-50);
   }
 `;
+
+Filter.propTypes = {
+  urlKey: PropTypes.string,
+  filters: PropTypes.array,
+};
+
+function Filter({ urlKey, filters }) {
+  const [filter, setSearchParams, searchParams] = useUrlParams(urlKey);
+
+  const currentFilter = !filter ? filters.at(0).value : filter;
+
+  function handleClick(value) {
+    searchParams.set(urlKey, value);
+    if (searchParams.get("page")) searchParams.set("page", 1);
+    setSearchParams(searchParams);
+  }
+
+  return (
+    <StyledFilter>
+      {filters.map((filter) => (
+        <FilterButton
+          key={filter.value}
+          active={filter.value === currentFilter ? "true" : ""}
+          onClick={() => handleClick(filter.value)}
+          disabled={filter.value === currentFilter}
+        >
+          {filter.label}
+        </FilterButton>
+      ))}
+    </StyledFilter>
+  );
+}
+
+export default Filter;

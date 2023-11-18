@@ -1,5 +1,12 @@
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
+Stat.propTypes = {
+  icon: PropTypes.any,
+  title: PropTypes.any,
+  value: PropTypes.any,
+  color: PropTypes.any,
+};
 const StyledStat = styled.div`
   /* Box */
   background-color: var(--color-grey-0);

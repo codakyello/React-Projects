@@ -1,25 +1,60 @@
-import styled from "styled-components";
+import useCabins from "./useCabins";
+import Spinner from "../../ui/Spinner";
+import CabinRow from "./CabinRow";
+import { toast } from "sonner";
+import Table from "../../ui/Table";
+import Menus from "../../ui/Menus";
+import useUrlParams from "../../hooks/useUrlParams";
 
-const Table = styled.div`
-  border: 1px solid var(--color-grey-200);
+function CabinTable() {
+  const [cabinFilter] = useUrlParams("discount");
+  const [cabinSort] = useUrlParams("sortBy");
 
-  font-size: 1.4rem;
-  background-color: var(--color-grey-0);
-  border-radius: 7px;
-  overflow: hidden;
-`;
+  const { isLoading, error, cabins } = useCabins();
 
-const TableHeader = styled.header`
-  display: grid;
-  grid-template-columns: 0.6fr 1.8fr 2.2fr 1fr 1fr 1fr;
-  column-gap: 2.4rem;
-  align-items: center;
+  if (isLoading) return <Spinner></Spinner>;
+  if (error) {
+    return toast.error(error.message);
+  }
 
-  background-color: var(--color-grey-50);
-  border-bottom: 1px solid var(--color-grey-100);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  font-weight: 600;
-  color: var(--color-grey-600);
-  padding: 1.6rem 2.4rem;
-`;
+  let filteredCabins = cabins;
+  if (cabinFilter === "no-discount")
+    filteredCabins = cabins.filter((cabin) => cabin.discount <= 0);
+
+  if (cabinFilter === "with-discount")
+    filteredCabins = cabins.filter((cabin) => cabin.discount > 0);
+
+  let sortedCabins = filteredCabins.slice().sort((a, b) => a.name - b.name);
+  if (cabinSort === "name-desc")
+    sortedCabins = filteredCabins.slice().sort((a, b) => b.name - a.name);
+
+  if (cabinSort === "regularPrice-desc")
+    sortedCabins = filteredCabins.slice().sort((a, b) => a.price - b.price);
+
+  if (cabinSort === "regularPrice-asc")
+    sortedCabins = filteredCabins.slice().sort((a, b) => b.price - a.price);
+
+  if (cabinSort === "maxCapacity-asc")
+    sortedCabins = filteredCabins
+      .slice()
+      .sort((a, b) => a.maxGuests - b.maxGuests);
+
+  if (cabinSort === "maxCapacity-desc")
+    sortedCabins = filteredCabins
+      .slice()
+      .sort((a, b) => b.maxGuests - a.maxGuests);
+
+  return (
+    <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
+      <Table.Header headings={["", "Cabin", "Capacity", "Price", "Discount"]} />
+      <Menus>
+        <Table.Body
+          data={sortedCabins}
+          render={(cabin) => <CabinRow key={cabin.id} cabin={cabin} />}
+        />
+      </Menus>
+    </Table>
+  );
+}
+
+export default CabinTable;

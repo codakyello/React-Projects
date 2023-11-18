@@ -3,25 +3,30 @@ import Button from "../../ui/Button";
 import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
-
+import { toast } from "sonner";
+import Error from "../../ui/Error";
+import FormLabel from "../../ui/FormLabel";
 import { useUpdateUser } from "./useUpdateUser";
 
 function UpdatePasswordForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
 
-  const { updateUser, isUpdating } = useUpdateUser();
+  const { isUpdating, updateUser } = useUpdateUser();
 
   function onSubmit({ password }) {
-    updateUser({ password }, { onSuccess: reset });
+    updateUser(
+      { password },
+      {
+        onSuccess: () => toast.success("User password successfully updated"),
+      }
+    );
   }
 
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
-      <FormRow
-        label="Password (min 8 characters)"
-        error={errors?.password?.message}
-      >
+      <FormRow>
+        <FormLabel htmlFor="password">Password (min 8 characters)</FormLabel>
         <Input
           type="password"
           id="password"
@@ -35,12 +40,11 @@ function UpdatePasswordForm() {
             },
           })}
         />
+        <Error>{errors?.password?.message}</Error>
       </FormRow>
 
-      <FormRow
-        label="Confirm password"
-        error={errors?.passwordConfirm?.message}
-      >
+      <FormRow>
+        <FormLabel htmlFor="passwordConfirm">Confirm Password</FormLabel>
         <Input
           type="password"
           autoComplete="new-password"
@@ -52,6 +56,7 @@ function UpdatePasswordForm() {
               getValues().password === value || "Passwords need to match",
           })}
         />
+        <Error>{errors?.passwordConfirm?.message}</Error>
       </FormRow>
       <FormRow>
         <Button onClick={reset} type="reset" variation="secondary">

@@ -15,10 +15,10 @@ import { guests } from "./data-guests";
 //   breakfastPrice: 15,
 // };
 
-async function deleteGuests() {
-  const { error } = await supabase.from("guests").delete().gt("id", 0);
-  if (error) console.log(error.message);
-}
+// async function deleteGuests() {
+//   const { error } = await supabase.from("guests").delete().gt("id", 0);
+//   if (error) console.log(error.message);
+// }
 
 async function deleteCabins() {
   const { error } = await supabase.from("cabins").delete().gt("id", 0);
@@ -30,13 +30,18 @@ async function deleteBookings() {
   if (error) console.log(error.message);
 }
 
-async function createGuests() {
-  const { error } = await supabase.from("guests").insert(guests);
-  if (error) console.log(error.message);
-}
+// async function createGuests() {
+//   const { error } = await supabase.from("guests").insert(guests);
+//   if (error) console.log(error.message);
+// }
 
 async function createCabins() {
   const { error } = await supabase.from("cabins").insert(cabins);
+  if (error) console.log(error.message);
+}
+
+async function createGuests() {
+  const { error } = await supabase.from("guests").insert(guests);
   if (error) console.log(error.message);
 }
 
@@ -46,7 +51,7 @@ async function createBookings() {
     .from("guests")
     .select("id")
     .order("id");
-  const allGuestIds = guestsIds.map((cabin) => cabin.id);
+  const allGuestIds = guestsIds.map((guest) => guest.id);
   const { data: cabinsIds } = await supabase
     .from("cabins")
     .select("id")
@@ -56,10 +61,10 @@ async function createBookings() {
   const finalBookings = bookings.map((booking) => {
     // Here relying on the order of cabins, as they don't have and ID yet
     const cabin = cabins.at(booking.cabinId - 1);
-    const numNights = subtractDates(booking.endDate, booking.startDate);
-    const cabinPrice = numNights * (cabin.regularPrice - cabin.discount);
+    const totalNights = subtractDates(booking.endDate, booking.startDate);
+    const cabinPrice = totalNights * (cabin.price - cabin.discount);
     const extrasPrice = booking.hasBreakfast
-      ? numNights * 15 * booking.numGuests
+      ? totalNights * 15 * booking.numGuests
       : 0; // hardcoded breakfast price
     const totalPrice = cabinPrice + extrasPrice;
 
@@ -84,17 +89,15 @@ async function createBookings() {
 
     return {
       ...booking,
-      numNights,
+      totalNights,
       cabinPrice,
       extrasPrice,
       totalPrice,
-      guestId: allGuestIds.at(booking.guestId - 1),
-      cabinId: allCabinIds.at(booking.cabinId - 1),
+      guestId: allGuestIds.at(Math.floor(Math.random() * allGuestIds.length)),
+      cabinId: allCabinIds.at(Math.floor(Math.random() * allCabinIds.length)),
       status,
     };
   });
-
-  console.log(finalBookings);
 
   const { error } = await supabase.from("bookings").insert(finalBookings);
   if (error) console.log(error.message);
@@ -107,12 +110,11 @@ function Uploader() {
     setIsLoading(true);
     // Bookings need to be deleted FIRST
     await deleteBookings();
-    await deleteGuests();
     await deleteCabins();
 
     // Bookings need to be created LAST
-    await createGuests();
     await createCabins();
+    await createGuests();
     await createBookings();
 
     setIsLoading(false);

@@ -19,9 +19,12 @@ export async function updateSetting(newSetting) {
     .eq("id", 1)
     .single();
 
+  // Go to the catch block and save the error in error state
   if (error) {
     console.error(error);
     throw new Error("Settings could not be updated");
   }
+
+  // Success state
   return data;
 }

@@ -10,7 +10,11 @@ import {
 import DataItem from "../../ui/DataItem";
 import { Flag } from "../../ui/Flag";
 
-import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
+import { formatCurrency, formatDistanceFromNow } from "../../utils/helpers";
+import PropTypes from "prop-types";
+BookingDataBox.propTypes = {
+  booking: PropTypes.object,
+};
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -77,9 +81,13 @@ const Price = styled.div`
   margin-top: 2.4rem;
 
   background-color: ${(props) =>
-    props.isPaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
+    props.ispaid === "true"
+      ? "var(--color-green-100)"
+      : "var(--color-yellow-100)"};
   color: ${(props) =>
-    props.isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
+    props.ispaid === "true"
+      ? "var(--color-green-700)"
+      : "var(--color-yellow-700)"};
 
   & p:last-child {
     text-transform: uppercase;
@@ -101,13 +109,16 @@ const Footer = styled.footer`
   text-align: right;
 `;
 
+BookingDataBox.propTypes = {
+  booking: PropTypes.object,
+};
 // A purely presentational component
 function BookingDataBox({ booking }) {
   const {
     created_at,
     startDate,
     endDate,
-    numNights,
+    totalNights,
     numGuests,
     cabinPrice,
     extrasPrice,
@@ -125,7 +136,7 @@ function BookingDataBox({ booking }) {
         <div>
           <HiOutlineHomeModern />
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            {totalNights} nights in Cabin <span>{cabinName}</span>
           </p>
         </div>
 
@@ -163,7 +174,7 @@ function BookingDataBox({ booking }) {
           {hasBreakfast ? "Yes" : "No"}
         </DataItem>
 
-        <Price isPaid={isPaid}>
+        <Price ispaid={isPaid.toString()}>
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
             {formatCurrency(totalPrice)}
 
